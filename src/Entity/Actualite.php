@@ -3,33 +3,53 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\ActualiteRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ActualiteRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['expertise:read']],
+    denormalizationContext: ['groups' => ['expertise:write']],
+)]
+/*
+* @Vich\Uploadable
+*/
 class Actualite
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?string $image = null;
 
     #[ORM\Column]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * @Vich\UploadableField(mapping="actualite_images", fileNameProperty="image")
+     */
+    private $imageFile;
 
     public function getId(): ?int
     {
@@ -94,5 +114,15 @@ class Actualite
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    public function setImageFile(UploadedFile $image = null): void
+    {
+        $this->imageFile = $image;
+    }
+
+    public function getImageFile(): ?UploadedFile
+    {
+        return $this->imageFile;
     }
 }

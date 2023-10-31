@@ -17,12 +17,12 @@ class ExpertiseController extends AbstractController
         $data = $request->getContent();
         $data = json_decode($data, true);
 
-        $user = new Expertise();
+        $expert = new Expertise();
 
-        $user->setTitle($data['title']);
-        $user->setDescription($data['description']);
+        $expert->setTitle($data['title']);
+        $expert->setDescription($data['description']);
 
-        $entityManager->persist($user);
+        $entityManager->persist($expert);
         $entityManager->flush();
 
         return new Response('Expertise created', Response::HTTP_CREATED);
