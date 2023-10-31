@@ -3,23 +3,31 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\ExpertiseRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
 #[ORM\Entity(repositoryClass: ExpertiseRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['expertise:read']],
+    denormalizationContext: ['groups' => ['expertise:write']],
+)]
 class Expertise
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?string $description = null;
 
     public function getId(): ?int
