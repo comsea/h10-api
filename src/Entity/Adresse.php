@@ -3,37 +3,50 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\AdresseRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AdresseRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['expertise:read']],
+    denormalizationContext: ['groups' => ['expertise:write']],
+)]
 class Adresse
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?string $adress = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?string $website = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?string $googlemaps = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?string $phone = null;
 
     #[ORM\ManyToOne(inversedBy: 'adresses')]
+    #[Groups(["expertise:read", "expertise:write"])]
     private ?Cabinet $cabinet = null;
 
     public function getId(): ?int

@@ -7,17 +7,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\ActualiteRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ActualiteRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['expertise:read']],
     denormalizationContext: ['groups' => ['expertise:write']],
 )]
-/*
-* @Vich\Uploadable
-*/
 class Actualite
 {
     #[ORM\Id]
@@ -42,14 +37,9 @@ class Actualite
     #[Groups(["expertise:read", "expertise:write"])]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Groups(["expertise:read", "expertise:write"])]
     private ?\DateTimeImmutable $updatedAt = null;
-
-    /**
-     * @Vich\UploadableField(mapping="actualite_images", fileNameProperty="image")
-     */
-    private $imageFile;
 
     public function getId(): ?int
     {
@@ -114,15 +104,5 @@ class Actualite
         $this->updatedAt = $updatedAt;
 
         return $this;
-    }
-
-    public function setImageFile(UploadedFile $image = null): void
-    {
-        $this->imageFile = $image;
-    }
-
-    public function getImageFile(): ?UploadedFile
-    {
-        return $this->imageFile;
     }
 }

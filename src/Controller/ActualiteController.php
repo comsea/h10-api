@@ -22,8 +22,20 @@ class ActualiteController extends AbstractController
         $actu->setTitle($data['title']);
         $actu->setDescription($data['description']);
 
-        $imageFile = $request->files->get('image');
-        $actu->setImage($imageFile);
+        $uploadedImage = $request->files->get('image');
+
+        if ($uploadedImage) {
+            $newFilename = 'generate_unique_filename.' . $uploadedImage->guessExtension();
+
+            // Déplacez le fichier téléchargé dans un répertoire approprié
+            $uploadedImage->move(
+                $this->getParameter('app.upload_dir'), // Configurez le répertoire dans services.yaml
+                $newFilename
+            );
+
+            // Assurez-vous que votre entité Actualite a une propriété pour stocker le nom du fichier de l'image
+            $actu->setImage($newFilename);
+        }
 
         $actu->setCreatedAt(new \DateTimeImmutable());
         $actu->setUpdatedAt(new \DateTimeImmutable());
